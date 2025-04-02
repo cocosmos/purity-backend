@@ -1,0 +1,5 @@
+function pkg-script () {
+  mv package.json package.json.old
+  echo $(jq --arg key "${1}" --arg val "${2}" '.scripts[$key]=$val' package.json.old) | jq | > package.json
+  rm package.json.old
+}

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+if [ -z "$WWWUSER" ]; then
+    export WWWUSER=1000
+fi
+
+if [ "$WWWUSER" -ne 1000 ]; then
+    usermod -u $WWWUSER cosmos
+fi
+
+# Ensure all the files are owned by cosmos user before to run the server
+chown -R cosmos:cosmos /var/www/html &
+
+# Needed by the Gitlab CI
+# Allow any user to read and write in the temp build directory
+if [ -d "/builds" ]; then
+  chmod -R ugo+rw /builds
+fi
+
+if [ $# -gt 0 ]; then
+    exec gosu $WWWUSER "$@"
+else
+    exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+fi

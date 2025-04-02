@@ -1,0 +1,6 @@
+#!/bin/bash
+# this script allow to run php as the mt user when logged as root user
+
+gosu "${WWWUSER:-1000}:${WWWGROUP:-1000}" php "$@"
+
+exit $?

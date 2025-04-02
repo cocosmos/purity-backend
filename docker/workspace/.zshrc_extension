@@ -1,0 +1,12 @@
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+function pkg-script () {
+  mv package.json package.json.old
+  echo $(jq --arg key "${1}" --arg val "${2}" '.scripts[$key]=$val' package.json.old) | jq | > package.json
+  rm package.json.old
+}
