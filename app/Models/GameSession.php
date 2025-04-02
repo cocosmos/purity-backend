@@ -50,7 +50,7 @@ class GameSession extends Model
     {
         return $this->game->questions()
             ->whereDoesntHave('answers', function ($query) {
-                $query->where('player_id', $this->player_id);
+                $query->where('game_session_id', $this->id);
             })
             ->inRandomOrder()
             ->first();

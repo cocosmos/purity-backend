@@ -20,6 +20,7 @@ class GameResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'image' => $this->image_path,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'questions' => QuestionResource::collection($this->whenLoaded('questions')),
         ];

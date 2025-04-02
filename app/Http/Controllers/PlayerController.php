@@ -14,6 +14,6 @@ class PlayerController extends Controller
             'username' => $request->getUsername(),
         ]);
 
-        return response()->json(PlayerResource::make($player), 201);
+        return response()->json(['player' => PlayerResource::make($player)], 201);
     }
 }

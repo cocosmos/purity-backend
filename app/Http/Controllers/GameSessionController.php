@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StartGameSessionRequest;
 use App\Http\Resources\GameResource;
+use App\Http\Resources\GameSessionResource;
 use App\Http\Resources\QuestionResource;
 use App\Models\GameSession;
 
@@ -26,11 +27,11 @@ class GameSessionController extends Controller
 
         return response()->json([
             'message' => 'Game session started successfully',
-            'game_session' => new GameResource($gameSession),
+            'game_session' => new GameSessionResource($gameSession),
         ]);
     }
 
-    public function result(GameSession $gameSession)
+    public function show(GameSession $gameSession)
     {
         return response()->json([
             'score' => $gameSession->score,

@@ -12,8 +12,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/players', [PlayerController::class, 'store'])->name('players.store');
-
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
 Route::post('/game-sessions/start', [GameSessionController::class, 'start'])->name('game-sessions.start');
 Route::post('/game-sessions/{gameSession}/answer', [AnswerController::class, 'respond'])->name('game-sessions.answer');
-Route::get('/game-sessions/{gameSession}/result', [GameSessionController::class, 'result'])->name('game-sessions.result');
+Route::get('/game-sessions/{gameSession}', [GameSessionController::class, 'show'])->name('game-sessions.show');
