@@ -23,9 +23,15 @@ class RespondAnswerRequest extends FormRequest
      */
     public function rules(): array
     {
+        $question =  Question::findOrFail($this->input('question_id'));
+        if(!$question->min_value || !$question->max_value) {
+            $between = '0,1';
+        } else {
+            $between = $question->min_value . ',' . $question->max_value;
+        }
         return [
             'question_id' => 'required|exists:questions,id',
-            'value' => 'required|integer',
+            'value' => 'required|integer|between:' . $between,
         ];
     }
 

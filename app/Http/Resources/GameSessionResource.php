@@ -22,8 +22,9 @@ class GameSessionResource extends JsonResource
             'id' => $this->id,
             'status' => $this->status,
             'game' => new GameResource($this->whenLoaded('game')),
-            'player' => new PlayerResource($this->whenLoaded('player')),
-            'first_question' => new QuestionResource($this->getNextQuestion()),
+            'current_question' => new QuestionResource($this->getNextQuestion()),
+            'total_questions' => $this->game->questions_count,
+            'answered_questions' => $this->answers_count,
         ];
     }
 }

@@ -29,6 +29,12 @@ class AnswerController extends Controller
         $gameSession->status = $nextQuestion ? GAME_SESSION_STATUSES::IN_PROGRESS->value : GAME_SESSION_STATUSES::FINISHED->value;
         $gameSession->save();
 
+        if (! $nextQuestion) {
+            return response()->json([
+                'score' => $gameSession->score,
+            ]);
+        }
+
         return response()->json([
             'next_question' => new QuestionResource($nextQuestion),
         ]);

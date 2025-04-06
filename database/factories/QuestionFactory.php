@@ -17,11 +17,13 @@ class QuestionFactory extends Factory
     public function definition(): array
     {
         $boolean = $this->faker->boolean();
+        $minValue = $boolean ? $this->faker->numberBetween(1, 10) : null;
+        $maxValue = $boolean ? $this->faker->numberBetween($minValue, $minValue+10) : null;
         return [
             'question' => $this->faker->sentence(),
             'points' => $this->faker->numberBetween(1, 10),
-            'min_value' => $boolean ? $this->faker->numberBetween(1, 10) : null,
-            'max_value' => $boolean ? $this->faker->numberBetween(1, 10) : null,
+            'min_value' => $minValue,
+            'max_value' => $maxValue,
         ];
     }
 }

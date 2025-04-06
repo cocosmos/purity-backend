@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StartGameSessionRequest;
-use App\Http\Resources\GameResource;
 use App\Http\Resources\GameSessionResource;
-use App\Http\Resources\QuestionResource;
 use App\Models\GameSession;
 
 class GameSessionController extends Controller
@@ -26,17 +24,24 @@ class GameSessionController extends Controller
 
 
         return response()->json([
-            'message' => 'Game session started successfully',
-            'game_session' => new GameSessionResource($gameSession),
+            'game_session_id' => $gameSession->id,
         ]);
     }
 
     public function show(GameSession $gameSession)
     {
         return response()->json([
-            'score' => $gameSession->score,
-            'status' => $gameSession->status,
-            'categories' => $gameSession->categories,
+            'game_session' => new GameSessionResource($gameSession
+                ->load([
+                    'game' => function ($query) {
+                        $query->withCount('questions');
+                    },
+                    'player',
+                ])
+                ->loadCount(['answers'])),
+//            'score' => $gameSession->score,
+//            'status' => $gameSession->status,
+//            'categories' => $gameSession->categories,
         ]);
     }
 }

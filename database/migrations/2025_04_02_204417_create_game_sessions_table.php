@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('game_sessions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('game_id')->constrained('games')->onDelete('cascade');
-            $table->foreignId('player_id')->constrained('players')->onDelete('cascade');
+            $table->foreignUuid('player_id')->constrained('players')->onDelete('cascade');
             $table->string('status')->default(GAME_SESSION_STATUSES::STARTED->value); // pending, in_progress, finished
             $table->integer('score')->default(0);
             $table->dateTime('started_at')->nullable();
