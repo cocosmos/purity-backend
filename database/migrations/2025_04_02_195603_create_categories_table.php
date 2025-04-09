@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->json('name');
-            $table->json('description');
+            $table->json('description')->nullable();
             $table->text('image_path')->nullable();
+            $table->float('coefficient')->default(1);
+            $table->foreignId('game_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
