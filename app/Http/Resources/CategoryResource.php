@@ -23,6 +23,10 @@ class CategoryResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'image' => $this->image_path,
+            'score' => $this->whenHas('score', function () {
+                return $this->score;
+            }),
+            'max_score' => $this->getMaxScoreAttribute(),
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\QUESTION_TYPES;
 use App\Models\Question;
 use App\Models\QuestionAnswer;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -24,15 +25,16 @@ class RespondAnswerRequest extends FormRequest
      */
     public function rules(): array
     {
+        /**
+         * @var Question $question
+         */
         $question =  Question::findOrFail($this->input('question_id'));
-        $isRequired = false;
-        if(!$question->truth_points || !$question->false_points) {
-            $isRequired = true;
-        }
+        $isRequiredAnswer = $question->type === QUESTION_TYPES::MULTIPLE->value;
+
         return [
             'question_id' => 'required|exists:questions,id',
-            'value' => 'boolean'. ($isRequired ? '|required' : '|nullable'),
-            'question_answer_id' => 'integer|exists:question_answers,id' . ($isRequired ? '|required' : '|nullable'),
+            'value' => 'boolean'. ($isRequiredAnswer ? '|nullable': '|required'),
+            'question_answer_id' => ($isRequiredAnswer ? 'required|' : 'nullable|').'integer|exists:question_answers,id',
         ];
     }
 
@@ -43,7 +45,7 @@ class RespondAnswerRequest extends FormRequest
 
     public function getQuestionAnswer(): ?QuestionAnswer
     {
-        if (!$this->has('question_answer_id')) {
+        if (!$this->validated('question_answer_id')) {
             return null;
         }
         return QuestionAnswer::findOrFail($this->validated('question_answer_id'));

@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignId('game_id')->constrained('games')->onDelete('cascade');
             $table->foreignUuid('player_id')->constrained('players')->onDelete('cascade');
             $table->string('status')->default(GAME_SESSION_STATUSES::STARTED->value); // pending, in_progress, finished
-            $table->integer('score')->default(0);
+            $table->integer('score_total')->default(0);
+            $table->json('categories_scores')->nullable();
             $table->dateTime('started_at')->nullable();
             $table->dateTime('finished_at')->nullable();
             $table->timestamps();

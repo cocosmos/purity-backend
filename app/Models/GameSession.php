@@ -15,10 +15,17 @@ class GameSession extends Model
     use HasFactory;
 
     protected $fillable = [
-        'score',
+        'score_total',
         'status',
         'started_at',
         'finished_at',
+        'categories_scores',
+    ];
+
+    protected $casts = [
+        'categories_scores' => 'array',
+        'started_at' => 'datetime',
+        'finished_at' => 'datetime',
     ];
 
     public function game(): BelongsTo
@@ -33,7 +40,14 @@ class GameSession extends Model
 
     public function categories(): HasManyThrough
     {
-        return $this->hasManyThrough(Category::class, Game::class);
+        return $this->hasManyThrough(
+            Category::class,
+            Game::class,
+            'id',
+            'game_id',
+            'game_id',
+            'id'
+        );
     }
 
     public function player(): BelongsTo
@@ -59,33 +73,33 @@ class GameSession extends Model
             ->first();
     }
 
-    public function calculateScore(Question $question, int $value): int
-    {
-        $score = 0;
-
-        if(! $question->min_value || ! $question->max_value) {
-            if ($value === 0) {
-                $score = -$question->points;
-            } else {
-                $score = $question->points;
-            }
-        }
-
-        // If the question has a min and max value, we need to check if the value is within the range
-        // and calculate the score accordingly
-        // More the value is close to the min value, more the score is low
-        // More the value is close to the max value, more the score is high
-        if ($question->min_value && $question->max_value) {
-            if ($value < $question->min_value) {
-                $score = -$question->points;
-            } elseif ($value > $question->max_value) {
-                $score = -$question->points;
-            } else {
-                // Calculate the score based on the value
-                $score = (($value - $question->min_value) / ($question->max_value - $question->min_value)) * $question->points;
-            }
-        }
-
-        return $score;
-    }
+//    public function calculateScore(Question $question, int $value): int
+//    {
+//        $score = 0;
+//
+//        if(! $question->min_value || ! $question->max_value) {
+//            if ($value === 0) {
+//                $score = -$question->points;
+//            } else {
+//                $score = $question->points;
+//            }
+//        }
+//
+//        // If the question has a min and max value, we need to check if the value is within the range
+//        // and calculate the score accordingly
+//        // More the value is close to the min value, more the score is low
+//        // More the value is close to the max value, more the score is high
+//        if ($question->min_value && $question->max_value) {
+//            if ($value < $question->min_value) {
+//                $score = -$question->points;
+//            } elseif ($value > $question->max_value) {
+//                $score = -$question->points;
+//            } else {
+//                // Calculate the score based on the value
+//                $score = (($value - $question->min_value) / ($question->max_value - $question->min_value)) * $question->points;
+//            }
+//        }
+//
+//        return $score;
+//    }
 }

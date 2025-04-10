@@ -3,11 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StartGameSessionRequest;
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\GameSessionResource;
 use App\Models\GameSession;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class GameSessionController extends Controller
 {
+    public function index()
+    {
+        $gameSessions = GameSession::with([
+            'game' => function ($query) {
+                $query->withCount('questions');
+            },
+            'player',
+        ])->get();
+
+        return response()->json([
+            'game_sessions' => GameSessionResource::collection($gameSessions),
+        ]);
+    }
+
     public function start(StartGameSessionRequest $request)
     {
         $game = $request->getGame();
@@ -39,9 +55,22 @@ class GameSessionController extends Controller
                     'player',
                 ])
                 ->loadCount(['answers'])),
-//            'score' => $gameSession->score,
-//            'status' => $gameSession->status,
-//            'categories' => $gameSession->categories,
+        ]);
+    }
+
+    public function scores(GameSession $gameSession)
+    {
+        $categories = $gameSession->categories;
+        $categories->map(function ($category) use ($gameSession) {
+            $categoryScore = $category->getWeightedPointsForGameSession($gameSession->id);
+            $category->score = $categoryScore;
+
+            return $category;
+        });
+
+        return response()->json([
+            'game_session' => new GameSessionResource($gameSession),
+            'categories' => CategoryResource::collection($categories),
         ]);
     }
 }
