@@ -52,7 +52,10 @@ class GameSession extends Model
             ->whereDoesntHave('answers', function ($query) {
                 $query->where('game_session_id', $this->id);
             })
-            ->inRandomOrder()
+            ->with(['questionAnswers' => function ($query) {
+                $query->orderBy('position');
+            }])
+            ->orderBy('position')
             ->first();
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\QUESTION_TYPES;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,9 +15,12 @@ return new class extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->json('question');
-            $table->integer('points');
-            $table->integer('min_value')->nullable();
-            $table->integer('max_value')->nullable();
+            $table->string('type')->default(QUESTION_TYPES::BOOLEAN);
+            $table->integer('truth_points')->nullable();
+            $table->integer('false_points')->nullable();
+            $table->integer('position')->default(0);
+            $table->foreignId('parent_id')->nullable()->constrained('questions')->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

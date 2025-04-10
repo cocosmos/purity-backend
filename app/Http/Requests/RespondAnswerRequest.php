@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Question;
+use App\Models\QuestionAnswer;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,14 +25,14 @@ class RespondAnswerRequest extends FormRequest
     public function rules(): array
     {
         $question =  Question::findOrFail($this->input('question_id'));
-        if(!$question->min_value || !$question->max_value) {
-            $between = '0,1';
-        } else {
-            $between = $question->min_value . ',' . $question->max_value;
+        $isRequired = false;
+        if(!$question->truth_points || !$question->false_points) {
+            $isRequired = true;
         }
         return [
             'question_id' => 'required|exists:questions,id',
-            'value' => 'required|integer|between:' . $between,
+            'value' => 'boolean'. ($isRequired ? '|required' : '|nullable'),
+            'question_answer_id' => 'integer|exists:question_answers,id' . ($isRequired ? '|required' : '|nullable'),
         ];
     }
 
@@ -40,8 +41,19 @@ class RespondAnswerRequest extends FormRequest
         return Question::findOrFail($this->validated('question_id'));
     }
 
-    public function getValue(): int
+    public function getQuestionAnswer(): ?QuestionAnswer
     {
-        return (int) $this->validated('value');
+        if (!$this->has('question_answer_id')) {
+            return null;
+        }
+        return QuestionAnswer::findOrFail($this->validated('question_answer_id'));
+    }
+
+    public function getValue(): ?bool
+    {
+        if (!$this->has('value')) {
+            return null;
+        }
+        return (bool) $this->validated('value');
     }
 }

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Collection;
 use Spatie\Translatable\HasTranslations;
 
 class Game extends Model
@@ -26,14 +28,14 @@ class Game extends Model
         'description',
     ];
 
-    public function categories(): BelongsToMany
+    public function categories(): HasMany
     {
-        return $this->belongsToMany(Category::class);
+        return $this->hasMany(Category::class);
     }
 
-    public function questions(): BelongsToMany
+    public function questions(): HasManyThrough
     {
-        return $this->belongsToMany(Question::class);
+        return $this->hasManyThrough(Question::class, Category::class);
     }
 
     public function gameSessions(): HasMany

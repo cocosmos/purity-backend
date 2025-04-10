@@ -2,12 +2,12 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Question;
+use App\Models\QuestionAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin Question */
-class QuestionResource extends JsonResource
+/** @mixin QuestionAnswer */
+class QuestionAnswerResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,8 +18,7 @@ class QuestionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'question' => $this->question,
-            'options' => QuestionAnswerResource::collection($this->whenLoaded('questionAnswers')),
+            'label' => $this->label,
         ];
     }
 }

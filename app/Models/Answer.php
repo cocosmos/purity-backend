@@ -13,7 +13,8 @@ class Answer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'value',
+        'is_truth',
+        'points'
     ];
 
     public function question(): BelongsTo
@@ -24,5 +25,10 @@ class Answer extends Model
     public function gameSession(): BelongsTo
     {
         return $this->belongsTo(GameSession::class);
+    }
+
+    public function questionAnswer(): BelongsTo
+    {
+        return $this->belongsTo(QuestionAnswer::class);
     }
 }

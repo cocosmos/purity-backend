@@ -15,17 +15,6 @@ class GameSeeder extends Seeder
      */
     public function run(): void
     {
-        $games = Game::factory(5)->create();
-        $categories = Category::factory(10)->create();
-
-        $games->each(function ($game) use ($categories) {
-            $categories = $categories->random(3);
-            $game->categories()->attach($categories->pluck('id')->toArray());
-            $questions = Question::factory(20)->create();
-            $game->questions()->attach($questions->pluck('id')->toArray());
-            $questions->each(function ($question) use ($categories) {
-                $question->categories()->attach($categories->random(2)->pluck('id')->toArray());
-            });
-        });
+        Game::create(['name' => 'Purity Game', 'description' => 'A game to test your purity.']);
     }
 }
