@@ -45,15 +45,18 @@ class GameSessionController extends Controller
 
     public function show(GameSession $gameSession)
     {
+        $gameSession
+            ->load([
+                'level',
+                'game' => function ($query) {
+                    $query->withCount('questions');
+                },
+                'player',
+            ])
+            ->loadCount(['answers']);
+
         return response()->json([
-            'game_session' => new GameSessionResource($gameSession
-                ->load([
-                    'game' => function ($query) {
-                        $query->withCount('questions');
-                    },
-                    'player',
-                ])
-                ->loadCount(['answers'])),
+            'game_session' => new GameSessionResource($gameSession),
         ]);
     }
 
