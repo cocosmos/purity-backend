@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https:://purity.chibroncoin.com', 'localhost:8081'],
+    'allowed_origins' => ['https:://purity.chibroncoin.com', 'http://localhost:8081'],
 
     'allowed_origins_patterns' => [],
 
