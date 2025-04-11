@@ -32,7 +32,9 @@ class CategoryResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),
-                Forms\Components\Textarea::make('image_path')
+                Forms\Components\FileUpload::make('image_path')
+                    ->label('Image')
+                    ->image()
                     ->columnSpanFull(),
             ]);
     }

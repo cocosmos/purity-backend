@@ -47,8 +47,8 @@ class AnswerController extends Controller
             $score = $gameSession->calculateTotalScore();
             $level = $gameSession->game->levels()
                 ->orderBy('min_score', 'desc')
-                ->where('min_score', '<=', -$score)
-                ->where('max_score', '>=', -$score)
+                ->where('min_score', '>=', -$score)
+                ->where('max_score', '<=', -$score)
                 ->first();
 
             $gameSession->finished_at = now();
