@@ -6,7 +6,6 @@ use App\Http\Requests\StartGameSessionRequest;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\GameSessionResource;
 use App\Models\GameSession;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class GameSessionController extends Controller
 {

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->json('categories_scores')->nullable();
             $table->dateTime('started_at')->nullable();
             $table->dateTime('finished_at')->nullable();
+            $table->foreignId('level_id')->nullable()->constrained('levels')->cascadeOnDelete();
             $table->timestamps();
         });
     }

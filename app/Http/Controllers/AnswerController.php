@@ -29,19 +29,37 @@ class AnswerController extends Controller
         }
         $answer->save();
 
-        // TODO: Calculate the score
-
-       // $score = $gameSession->calculateScore($question, $value);
-
+        // Answer automatically if the next question is a child question
         $nextQuestion = $gameSession->getNextQuestion();
+        if($nextQuestion && $nextQuestion->parent_id && $value === false) {
+            /** @var Answer $answer */
+            $answer = $gameSession->answers()->make([
+                'is_truth' => false,
+                'points' => $nextQuestion->false_points
+            ]);
+            $answer->question()->associate($nextQuestion);
+            $answer->save();
 
-        $gameSession->finished_at = $nextQuestion ? null : now();
-        $gameSession->status = $nextQuestion ? GAME_SESSION_STATUSES::IN_PROGRESS->value : GAME_SESSION_STATUSES::FINISHED->value;
-        $gameSession->save();
+            $nextQuestion = $gameSession->getNextQuestion();
+        }
+
+        if(! $nextQuestion) {
+            $score = $gameSession->calculateTotalScore();
+            $level = $gameSession->game->levels()
+                ->orderBy('min_score', 'desc')
+                ->where('min_score', '<=', -$score)
+                ->where('max_score', '>=', -$score)
+                ->first();
+
+            $gameSession->finished_at = now();
+            $gameSession->status = GAME_SESSION_STATUSES::FINISHED->value;
+            $gameSession->score_total = $score;
+            $gameSession->level()->associate($level);
+            $gameSession->save();
+        }
 
         if (! $nextQuestion) {
             return response()->json([
-                'message' => 'Game finished',
                 'is_finished' => true,
             ])->setStatusCode(200, 'Game finished');
         }

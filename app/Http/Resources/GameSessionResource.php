@@ -26,6 +26,7 @@ class GameSessionResource extends JsonResource
             'current_question' => new QuestionResource($this->getNextQuestion()),
             'total_questions' => $this->game->questions_count,
             'answered_questions' => $this->answers_count,
+            'level_name' => $this->level ? $this->level->name : 'no level',
         ];
     }
 }
